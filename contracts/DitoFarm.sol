@@ -77,8 +77,6 @@ contract DitoFarm is MockUSDT, DitoUSD
         uint256 dito = reward[msg.sender];
         //reset reward to 0
         reward[msg.sender]=0;
-        //remove user from stakers
-        //staker.pop(msg.sender);
         //transfer reward to user
         DitoUSD.reward(msg.sender,dito);
         return ("you have Claimed ", dito , "DUSD");
