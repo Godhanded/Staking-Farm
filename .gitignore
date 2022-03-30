@@ -5,3 +5,4 @@ console.sol
 hardhat.config.js
 package.json
 package-lock.json
+scripts

@@ -1,4 +1,4 @@
-const hrc = require("hardhat")
+const hre = require("hardhat")
 
 const main = async () =>{
   const DitoFarm = await hre.ethers.getContractFactory("DitoFarm")

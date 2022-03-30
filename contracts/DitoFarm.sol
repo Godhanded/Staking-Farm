@@ -1,12 +1,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import "./MockUSDT.sol";
-import "./DitoUSD.sol";
 
-contract DitoFarm is MockUSDT, DitoUSD 
+
+interface IMUSDT
+{
+   function balanceOf(address _owner) external view returns (uint256 balance);
+   function transfer(address _to, uint256 _value) external returns (bool success);
+   function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);
+    
+}
+
+interface IDUSD
+{
+     function reward(address _to, uint256 _amount)external ;
+}
+
+contract DitoFarm
 
 {
 
+  
   address public owner;
   //dynamic array to store people that have staked
   address [] public staker;
@@ -18,27 +31,30 @@ contract DitoFarm is MockUSDT, DitoUSD
   mapping (address => uint256) public reward; 
   //map user to block time
   mapping (address => uint256) private timestamp;
+  address private MockUSDT;
+  address private DUSD;
 
   //initiallize contract owner
 
-    constructor ()
+    constructor (address _mockaddr, address _Dusd)
     {
         owner = msg.sender;
-
+        MockUSDT = _mockaddr;
+        DUSD = _Dusd;
     }
 
     function Stake(uint256 _amount)public returns(string memory)
     {
         //must have balance to stake
-        require( MockUSDT.balances[msg.sender] >= (_amount*10**18), "Insufficient MUSDT");
+        require( IMUSDT(MockUSDT).balanceOf(msg.sender) >= (_amount*10**18), "Insufficient MUSDT");
         //call MockUSDT contract to peform transfer
-         MockUSDT.transferFrom(msg.sender, address(this), _amount);
+         IMUSDT(MockUSDT).transferFrom(msg.sender, address(this), _amount);
          //record users timestamp add 7 days
          timestamp[msg.sender] = block.timestamp + 7 days;
          //record staked tokens
          stakedToken[msg.sender] += _amount*10**18;
          //record rewards, 1%
-         reward[msg.sender] += (_amount/100);
+         reward[msg.sender] += _amount*10**16;
          
          //if havent staked before add user to staker array
          if (!hasStaked[msg.sender])
@@ -60,7 +76,7 @@ contract DitoFarm is MockUSDT, DitoUSD
         //change staking state to false
         hasStaked[msg.sender] = false;
         //return stake
-        MockUSDT.transfer( msg.sender, stakedToken[msg.sender]);
+        IMUSDT(MockUSDT).transfer( msg.sender, ((stakedToken[msg.sender])/10**18));
 
         //reset staked balance to 0
         stakedToken[msg.sender] = 0;
@@ -78,7 +94,7 @@ contract DitoFarm is MockUSDT, DitoUSD
         //reset reward to 0
         reward[msg.sender]=0;
         //transfer reward to user
-        DitoUSD.reward(msg.sender,dito);
+        IDUSD(DUSD).reward(msg.sender,dito);
         return ("you have Claimed ", dito , "DUSD");
     }
   
