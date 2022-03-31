@@ -9,4 +9,7 @@ DitoUSD Address:
 https://rinkeby.etherscan.io/address/0x4349E9F4f67152AC3BC20CAd8158CEFe4Fff9DE5#code
 
 Dito STaking Farm Address:
-https://rinkeby.etherscan.io/address/0xAa31B59e9A4D47E8Afa6B3fB2c9c80E3d54EC836#code
+https://rinkeby.etherscan.io/address/0xAa31B59e9A4D47E8Afa6B3fB2c9c80E3d54EC836#
+
+FrontEnd Link:
+https://ditofarm.netlify.app/
